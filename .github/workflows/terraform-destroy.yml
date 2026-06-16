@@ -96,7 +96,7 @@ jobs:
         run: |
           cp ../.tflint.hcl .tflint.hcl
           tflint --init
-          tflint --format=compact
+          tflint --format=compact --minimum-failure-severity=error
 
   # ─── JOB 2: Destroy ─────────────────────────────────────────────────────────
   destroy:

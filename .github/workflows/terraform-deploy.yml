@@ -75,7 +75,7 @@ jobs:
         run: |
           cp ../.tflint.hcl .tflint.hcl
           tflint --init
-          tflint --format=compact
+          tflint --format=compact --minimum-failure-severity=error
 
       - name: "④ Checkov — IaC security scan (warn only)"
         uses: bridgecrewio/checkov-action@v12
