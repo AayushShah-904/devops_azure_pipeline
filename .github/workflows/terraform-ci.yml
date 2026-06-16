@@ -147,18 +147,30 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
-      # terraform test uses mock_provider, so no real Azure creds needed
+      # terraform test uses mock_provider, so no real Azure creds needed.
+      # We write a temporary override.tf to disable the remote backend so
+      # terraform init does not need Azure Storage credentials.
       - name: "① terraform test — run unit tests with mock providers"
         id: terraform_test
         run: |
-          echo "Initializing Terraform (no backend)..."
-          terraform init -backend=false
+          echo "Disabling remote backend for unit tests..."
+          cat > override.tf <<'EOF'
+          terraform {
+            backend "local" {}
+          }
+          EOF
+
+          echo "Initializing Terraform (local backend, no Azure creds needed)..."
+          terraform init -reconfigure
 
           echo ""
           echo "Running unit tests..."
           terraform test -filter=tests/unit_networking.tftest.hcl \
                         -filter=tests/unit_compute.tftest.hcl \
                         -filter=tests/unit_keyvault.tftest.hcl
+
+          # Clean up override file
+          rm -f override.tf
         env:
           TF_VAR_subscription_id: "00000000-0000-0000-0000-000000000000"
           TF_VAR_tenant_id: "00000000-0000-0000-0000-000000000000"
@@ -176,13 +188,20 @@ jobs:
       - name: "② Conftest — generate plan JSON for policy evaluation"
         id: plan_json
         run: |
-          # Initialize with real backend skipped; produce plan in JSON format
-          terraform init -backend=false
+          # Disable remote backend so no Azure Storage credentials are needed
+          cat > override.tf <<'EOF'
+          terraform {
+            backend "local" {}
+          }
+          EOF
+
+          terraform init -reconfigure
           terraform plan -out=tfplan_ci.binary \
             -var="subscription_id=00000000-0000-0000-0000-000000000000" \
             -var="tenant_id=00000000-0000-0000-0000-000000000000" \
             -var="admin_password=MockP@ssw0rd123!" 2>/dev/null || true
           terraform show -json tfplan_ci.binary 2>/dev/null > tfplan_ci.json || echo '{"resource_changes":[]}' > tfplan_ci.json
+          rm -f override.tf
           echo "Plan JSON generated."
 
       - name: "② Conftest — evaluate OPA policies"
