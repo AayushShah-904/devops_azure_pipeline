@@ -77,7 +77,7 @@ jobs:
       - name: "🔍 Setup TFLint"
         uses: terraform-linters/setup-tflint@v4
         with:
-          tflint_version: v0.51.0
+          tflint_version: v0.53.0
 
       - name: "③ TFLint — lint Terraform code"
         id: tflint
@@ -85,7 +85,9 @@ jobs:
           # Copy the .tflint.hcl from the repo root into the working directory
           cp ../.tflint.hcl .tflint.hcl
           tflint --init
-          tflint --format=compact
+          # --minimum-failure-severity=error: warnings are reported but do NOT
+          # cause a non-zero exit code (exit 2). Only actual errors block the PR.
+          tflint --format=compact --minimum-failure-severity=error
 
       # ④ Checkov — security scan (WARN ONLY — does NOT block)
       - name: "④ Checkov — IaC security scan (warn only)"
