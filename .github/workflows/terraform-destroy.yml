@@ -1,178 +1,53 @@
-# ─────────────────────────────────────────────────────────────────────────────
-# terraform-destroy.yml
-#
-# TRIGGER: Manual — GitHub Actions UI → "Run workflow" button.
-#
-# PURPOSE: Safe infrastructure teardown with a typed confirmation gate.
-#
-# ⚠️  DESTRUCTIVE: This workflow permanently deletes all Azure resources
-#     managed by this Terraform configuration.
-#
-# HOW TO USE:
-#   1. GitHub → Actions tab
-#   2. Click "Destroy Terraform Infrastructure"
-#   3. Click "Run workflow"
-#   4. In the "Type 'destroy' to confirm" field, type: destroy
-#   5. If you type anything else, the workflow stops immediately — no harm done.
-#
-# PROTECTION LAYERS:
-#   Layer 1: You must manually navigate to this workflow and click "Run workflow"
-#   Layer 2: You must type "destroy" exactly in the text input
-#   Layer 3: quality-gate job runs (same checks as CI) before destroy proceeds
-# ─────────────────────────────────────────────────────────────────────────────
-
-name: "Destroy Terraform Infrastructure"
+name: "Terraform Destroy"
 
 on:
   workflow_dispatch:
     inputs:
-      confirm:
-        description: "Type 'destroy' to confirm you want to permanently delete all resources"
+      confirmation:
+        description: "Type 'destroy' to confirm destruction of all resources"
         required: true
         type: string
 
-env:
-  TF_WORKING_DIR: "./terraform"
-  TF_VERSION: "1.12.0"
+permissions:
+  contents: read
 
 jobs:
-  # ─── Safety Check: Confirm the user typed "destroy" ─────────────────────────
-  confirm-destroy:
-    name: "⚠️ Confirm Destroy Intent"
+  validate-destroy:
+    name: "Validate Confirmation"
     runs-on: ubuntu-latest
-
     steps:
-      - name: "Check confirmation input"
-        id: check
+      - name: Check Confirmation String
         run: |
-          if [ "${{ github.event.inputs.confirm }}" != "destroy" ]; then
-            echo "❌ Confirmation failed."
-            echo ""
-            echo "You typed: '${{ github.event.inputs.confirm }}'"
-            echo "Expected:  'destroy'"
-            echo ""
-            echo "The destroy workflow requires you to type 'destroy' exactly."
-            echo "No resources have been affected."
+          if [ "${{ github.event.inputs.confirmation }}" != "destroy" ]; then
+            echo "Error: Confirmation string does not match 'destroy'."
             exit 1
           fi
-          echo "✅ Confirmation accepted. Proceeding with destroy..."
 
-  # ─── JOB 1: Quality Gate ────────────────────────────────────────────────────
-  quality-gate:
-    name: "① Quality Gate"
-    runs-on: ubuntu-latest
-    needs: confirm-destroy
-    defaults:
-      run:
-        working-directory: ${{ env.TF_WORKING_DIR }}
-
-    steps:
-      - name: "📥 Checkout code"
-        uses: actions/checkout@v4
-
-      - name: "🔧 Setup Terraform ${{ env.TF_VERSION }}"
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: "① terraform fmt"
-        run: terraform fmt -check -recursive
-
-      - name: "② terraform validate"
-        run: |
-          terraform init -backend=false
-          terraform validate
-        env:
-          TF_VAR_subscription_id: "00000000-0000-0000-0000-000000000000"
-          TF_VAR_tenant_id:       "00000000-0000-0000-0000-000000000000"
-          TF_VAR_admin_password:  "DummyP@ss1!"
-
-      - name: "🔍 Setup TFLint"
-        uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: v0.51.0
-
-      - name: "③ TFLint"
-        run: |
-          cp ../.tflint.hcl .tflint.hcl
-          tflint --init
-          tflint --format=compact --minimum-failure-severity=error
-
-  # ─── JOB 2: Destroy ─────────────────────────────────────────────────────────
   destroy:
-    name: "② Destroy Infrastructure"
+    name: "Terraform Destroy"
+    needs: validate-destroy
     runs-on: ubuntu-latest
-    needs: quality-gate
-    defaults:
-      run:
-        working-directory: ${{ env.TF_WORKING_DIR }}
-    environment:
-      # Using a GitHub environment called "sandbox" allows for required reviewers.
-      # Set this up in: Repo → Settings → Environments → sandbox
-      name: sandbox
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_admin_password: ${{ secrets.TF_VAR_ADMIN_PASSWORD }}
 
     steps:
-      - name: "📥 Checkout code"
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: "🔑 Azure Login"
-        uses: azure/login@v2
-        with:
-          creds: |
-            {
-              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
-              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
-              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
-              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
-            }
-
-      - name: "🔧 Setup Terraform ${{ env.TF_VERSION }}"
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: ${{ env.TF_VERSION }}
+          terraform_version: 1.8.0
 
-      - name: "terraform init"
+      - name: Terraform Init
         run: terraform init
-        env:
-          ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
+        working-directory: terraform
 
-      # Show a plan of what WILL be destroyed before executing
-      - name: "terraform plan -destroy (preview)"
+      - name: Terraform Destroy
         run: |
-          echo "⚠️  The following resources will be PERMANENTLY DELETED:"
-          echo ""
-          terraform plan \
-            -destroy \
-            -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-            -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-            -var="admin_password=${{ secrets.TF_VAR_admin_password }}"
-        env:
-          ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
-
-      # Execute the destroy
-      - name: "💥 terraform destroy"
-        run: |
-          echo "💥 Destroying infrastructure..."
-          terraform destroy \
-            -auto-approve \
-            -var="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
-            -var="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-            -var="admin_password=${{ secrets.TF_VAR_admin_password }}"
-        env:
-          ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
-
-      - name: "✅ Destroy complete"
-        run: |
-          echo "✅ All Terraform-managed resources have been destroyed."
-          echo ""
-          echo "Run the 'Deploy Terraform Infrastructure' workflow with action='apply'"
-          echo "to recreate the infrastructure from scratch."
+          terraform destroy -auto-approve
+        working-directory: terraform

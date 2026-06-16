@@ -130,3 +130,37 @@ terraform destroy
 # Destroy a single resource
 terraform destroy -target=azurerm_linux_virtual_machine.vm_india
 ```
+
+---
+
+## CI/CD Pipeline (GitHub Actions)
+
+This project is configured with a fully automated, cloud-agnostic CI/CD pipeline using GitHub Actions.
+
+### Pipeline Stages
+
+1. **Quality Gate (Stage 1):** Code formatting (`terraform fmt`), syntax check (`terraform validate`), Terraform best-practices check (`TFLint`), and security checks (`Checkov` & `Trivy`).
+2. **Automated Testing (Stage 2):** Runs mock-based Terraform unit tests (`terraform test`) and Open Policy Agent policy checks (`Conftest`).
+3. **Plan (Stage 3):** Generates execution plans for changes, runs Conftest policies, and posts plan output directly to the Pull Request.
+4. **Deploy / Destroy (Stage 4):** Manual workflows to apply (`terraform apply`) or destroy (`terraform destroy`) with safety verification inputs.
+
+### Setting Up Secrets (One-time Setup)
+
+Before triggering the CI/CD pipeline, add these Repository Secrets to GitHub (**Repo Settings -> Secrets and variables -> Actions**):
+
+| Secret Name | Value |
+|---|---|
+| `AZURE_CLIENT_ID` | Your Service Principal Application ID |
+| `AZURE_CLIENT_SECRET` | Your Service Principal password |
+| `AZURE_SUBSCRIPTION_ID` | Your Azure subscription ID |
+| `AZURE_TENANT_ID` | Your Azure Tenant ID |
+| `TF_VAR_ADMIN_PASSWORD` | The administrator password for the Virtual Machines |
+
+To create a Service Principal, run:
+```bash
+az ad sp create-for-rbac --name "github-actions-sandbox" --role "Contributor" --scopes "/subscriptions/<YOUR_SUBSCRIPTION_ID>" --sdk-auth
+```
+
+### Manual Deploy Trigger
+Go to **Actions** -> select **Terraform Deploy** -> click **Run workflow** -> select `plan` (dry-run) or `apply` (actual deploy).
+
