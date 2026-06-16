@@ -102,7 +102,6 @@ output "nsg_usa_id" {
 */
 
 # ─── Key Vault ─────────────────────────────────────────────────────────────────
-/*
 output "key_vault_id" {
   description = "Resource ID of the Key Vault"
   value       = azurerm_key_vault.kv.id
@@ -112,7 +111,6 @@ output "key_vault_uri" {
   description = "URI of the Key Vault"
   value       = azurerm_key_vault.kv.vault_uri
 }
-*/
 
 # ─── Generated SSH Key ─────────────────────────────────────────────────────────
 output "ssh_public_key_openssh" {
@@ -122,7 +120,6 @@ output "ssh_public_key_openssh" {
 }
 
 # ─── Key Vault Secret URIs ─────────────────────────────────────────────────────
-/*
 output "kv_secret_ssh_private_key_id" {
   description = "Key Vault secret resource ID for the SSH private key"
   value       = azurerm_key_vault_secret.ssh_private_key.id
@@ -148,4 +145,3 @@ output "kv_secret_ssh_private_key_version_uri" {
   description = "Versionless URI to retrieve the SSH private key from Key Vault"
   value       = azurerm_key_vault_secret.ssh_private_key.versionless_id
 }
-*/

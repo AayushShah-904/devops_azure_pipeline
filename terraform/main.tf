@@ -320,13 +320,12 @@ resource "azurerm_network_interface_security_group_association" "nic_usa_nsg" {
 */
 
 # ─── Key Vault ────────────────────────────────────────────────────────────────
-/*
 resource "azurerm_key_vault" "kv" {
   rbac_authorization_enabled      = true
   enabled_for_deployment          = true
   enabled_for_disk_encryption     = false
   enabled_for_template_deployment = false
-  location                        = var.location_westus2
+  location                        = var.location_centralindia
   name                            = var.key_vault_name
   public_network_access_enabled   = true
   purge_protection_enabled        = false
@@ -386,7 +385,7 @@ resource "azurerm_key_vault_secret" "admin_password" {
   tags         = { purpose = "vm-recovery-credentials" }
   depends_on   = [azurerm_role_assignment.kv_secrets_officer]
 }
-*/
+
 
 # ─── Linux VM — West US 2 ────────────────────────────────────────────────────
 /*
@@ -449,11 +448,10 @@ resource "azurerm_linux_virtual_machine" "vm_usa" {
 
 # ─── Linux VM — Central India ─────────────────────────────────────────────────
 resource "azurerm_linux_virtual_machine" "vm_india" {
-  admin_password                  = var.admin_password
   admin_username                  = var.admin_username
   allow_extension_operations      = true
   computer_name                   = var.vm_india_computer_name
-  disable_password_authentication = false # password kept as recovery; primary auth is SSH
+  disable_password_authentication = true # password authentication is disabled; auth is SSH key only
   disk_controller_type            = "SCSI"
   extensions_time_budget          = "PT1H30M"
   location                        = var.location_centralindia
