@@ -44,9 +44,11 @@ jobs:
 
       - name: Init TFLint
         run: tflint --init
+        working-directory: terraform
 
       - name: Run TFLint
         run: tflint -f compact
+        working-directory: terraform
 
       - name: Run Checkov Security Scan
         uses: bridgecrewio/checkov-action@master
