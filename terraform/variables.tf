@@ -1,3 +1,4 @@
+// Subscription and Tenant Variables Central India
 variable "subscription_id" {
   description = "Azure Subscription ID"
   type        = string
@@ -8,13 +9,14 @@ variable "tenant_id" {
   type        = string
 }
 
-# ─── Resource Group ────────────────────────────────────────────────────────────
+// Resource Group Variables Central India
 variable "resource_group_name" {
   description = "Name of the shared resource group"
   type        = string
   default     = "bo-sandbox-rg-tf"
 }
 
+// Location Variables Central India
 variable "location_westus2" {
   description = "Primary Azure region (West US 2)"
   type        = string
@@ -27,7 +29,7 @@ variable "location_centralindia" {
   default     = "centralindia"
 }
 
-# ─── SSH / Admin ────────────────────────────────────────────────────────────────
+// Admin Credentials Variables Central India
 variable "admin_username" {
   description = "Administrator username for all Linux VMs"
   type        = string
@@ -40,11 +42,11 @@ variable "admin_password" {
   sensitive   = true
 }
 
-# ─── Virtual Machines ──────────────────────────────────────────────────────────
+// Virtual Machine Variables Central India
 variable "vm_size" {
   description = "VM SKU size for both Linux VMs. Standard_B2s is used for Azure Student subscriptions. Upgrade to Standard_D2s_v3 or higher on paid subscriptions."
   type        = string
-  default     = "Standard_B2s" # STUDENT SUBSCRIPTION: change to Standard_D2s_v3 for paid
+  default     = "Standard_B2s"
 }
 
 variable "vm_westus2_name" {
@@ -71,7 +73,7 @@ variable "vm_india_computer_name" {
   default     = "bosandvmindia"
 }
 
-# ─── OS Disk ───────────────────────────────────────────────────────────────────
+// OS Disk Variables Central India
 variable "os_disk_size_gb" {
   description = "OS disk size in GiB for all VMs"
   type        = number
@@ -81,7 +83,7 @@ variable "os_disk_size_gb" {
 variable "os_disk_storage_type" {
   description = "Storage account type for OS disks. StandardSSD_LRS is used for Azure Student subscriptions. Upgrade to Premium_LRS on paid subscriptions."
   type        = string
-  default     = "StandardSSD_LRS" # STUDENT SUBSCRIPTION: change to Premium_LRS for paid
+  default     = "StandardSSD_LRS"
 }
 
 variable "vm_westus2_os_disk_name" {
@@ -96,7 +98,7 @@ variable "vm_india_os_disk_name" {
   default     = "bo-sandbox-vm-india-disk1-tf"
 }
 
-# ─── Source Image ──────────────────────────────────────────────────────────────
+// Image Variables Central India
 variable "image_publisher" {
   description = "VM image publisher"
   type        = string
@@ -121,7 +123,7 @@ variable "image_version" {
   default     = "latest"
 }
 
-# ─── Key Vault ─────────────────────────────────────────────────────────────────
+// Key Vault Variables Central India
 variable "key_vault_name" {
   description = "Name of the Azure Key Vault"
   type        = string
@@ -140,7 +142,7 @@ variable "key_vault_soft_delete_days" {
   default     = 90
 }
 
-# ─── Network Interfaces ────────────────────────────────────────────────────────
+// Network Interface Variables Central India
 variable "nic_india_name" {
   description = "Name of the Central India NIC"
   type        = string
@@ -153,7 +155,7 @@ variable "nic_westus2_name" {
   default     = "bo-sandbox-nic-usa-tf"
 }
 
-# ─── Public IPs ────────────────────────────────────────────────────────────────
+// Public IP Variables Central India
 variable "public_ip_india_name" {
   description = "Name of the Central India public IP"
   type        = string
@@ -166,7 +168,7 @@ variable "public_ip_westus2_name" {
   default     = "bo-sandbox-ip-usa-tf"
 }
 
-# ─── NSG Names ─────────────────────────────────────────────────────────────────
+// Network Security Group Variables Central India
 variable "nsg_india_name" {
   description = "NSG name for the Central India VM"
   type        = string
@@ -179,8 +181,7 @@ variable "nsg_westus2_name" {
   default     = "bo-sandbox-nsg-usa-tf"
 }
 
-
-# ─── Virtual Networks & Subnets ────────────────────────────────────────────────
+// Virtual Network and Subnet Variables Central India
 variable "vnet_india_name" {
   description = "Name of the Central India VNet"
   type        = string
@@ -205,10 +206,7 @@ variable "subnet_address_prefixes" {
   default     = ["10.0.0.0/24"]
 }
 
-# NOTE: Network Watchers are auto-created by Azure when VNet resources are
-# provisioned. They are not managed here to avoid deployment conflicts.
-
-# ─── SSH Public Key Resource ───────────────────────────────────────────────────
+// SSH Public Key Variables Central India
 variable "ssh_public_key_resource_name" {
   description = "Name of the Azure SSH Public Key resource for West US 2"
   type        = string

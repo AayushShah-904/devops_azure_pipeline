@@ -130,34 +130,3 @@ terraform destroy
 # Destroy a single resource
 terraform destroy -target=azurerm_linux_virtual_machine.vm_india
 ```
-
----
-
-## Student vs Paid Subscription
-
-Change these two values in `terraform/terraform.tfvars.json`:
-
-| Setting | Student | Paid |
-|---|---|---|
-| `vm_size` | `Standard_B2s` | `Standard_D2s_v3` |
-| `os_disk_storage_type` | `StandardSSD_LRS` | `Premium_LRS` |
-
----
-
-## Troubleshooting
-
-| Error | Fix |
-|---|---|
-| `No valid credential sources found` | Run `az login` and `az account set --subscription "<ID>"` |
-| `Backend configuration changed` | Run `terraform init -reconfigure` |
-| `Storage account name already taken` | Change `storage_account_name` in `bootstrap/terraform.tfvars.json` and the backend block in `terraform/providers.tf` |
-| `Resource already exists` | Import it: `terraform import azurerm_resource_group.rg /subscriptions/<SUB_ID>/resourceGroups/bo-sandbox-rg-tf` |
-| `Insufficient quota` | Check: `az vm list-usage --location centralindia --output table`. Use a smaller VM size or request a quota increase. |
-
----
-
-## Security Reminders
-
-- `terraform.tfvars.json` files are in `.gitignore` — **never commit them**
-- Use the `.example` files as templates
-- SSH private key is in Terraform state — retrieve with `terraform output -raw ssh_public_key_openssh`

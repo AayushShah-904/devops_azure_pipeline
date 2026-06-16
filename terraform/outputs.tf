@@ -1,4 +1,4 @@
-# ─── Resource Group ────────────────────────────────────────────────────────────
+// Resource Group Central India
 output "resource_group_name" {
   description = "Name of the deployed resource group"
   value       = azurerm_resource_group.rg.name
@@ -9,19 +9,7 @@ output "resource_group_location" {
   value       = azurerm_resource_group.rg.location
 }
 
-# ─── Virtual Machines ──────────────────────────────────────────────────────────
-/*
-output "vm_usa_id" {
-  description = "Resource ID of the West US 2 Linux VM"
-  value       = azurerm_linux_virtual_machine.vm_usa.id
-}
-
-output "vm_usa_name" {
-  description = "Name of the West US 2 Linux VM"
-  value       = azurerm_linux_virtual_machine.vm_usa.name
-}
-*/
-
+// Linux Virtual Machine Central India
 output "vm_india_id" {
   description = "Resource ID of the Central India Linux VM"
   value       = azurerm_linux_virtual_machine.vm_india.id
@@ -37,71 +25,36 @@ output "vm_india_principal_id" {
   value       = azurerm_linux_virtual_machine.vm_india.identity[0].principal_id
 }
 
-# ─── Public IP Addresses ───────────────────────────────────────────────────────
+// Public IP Central India
 output "public_ip_india_address" {
   description = "Public IP address of the Central India VM"
   value       = azurerm_public_ip.pip_india.ip_address
 }
 
-/*
-output "public_ip_usa_address" {
-  description = "Public IP address of the West US 2 VM"
-  value       = azurerm_public_ip.pip_usa.ip_address
-}
-*/
-
-# ─── Network Interfaces ────────────────────────────────────────────────────────
+// Network Interface Central India
 output "nic_india_id" {
   description = "Resource ID of the Central India NIC"
   value       = azurerm_network_interface.nic_india.id
 }
 
-/*
-output "nic_usa_id" {
-  description = "Resource ID of the West US 2 NIC"
-  value       = azurerm_network_interface.nic_usa.id
-}
-*/
-
-# ─── Virtual Networks & Subnets ────────────────────────────────────────────────
+// Virtual Network and Subnet Central India
 output "vnet_india_id" {
   description = "Resource ID of the Central India VNet"
   value       = azurerm_virtual_network.vnet_india.id
 }
-
-/*
-output "vnet_usa_id" {
-  description = "Resource ID of the West US 2 VNet"
-  value       = azurerm_virtual_network.vnet_usa.id
-}
-*/
 
 output "subnet_india_id" {
   description = "Resource ID of the Central India subnet"
   value       = azurerm_subnet.subnet_india.id
 }
 
-/*
-output "subnet_usa_id" {
-  description = "Resource ID of the West US 2 subnet"
-  value       = azurerm_subnet.subnet_usa.id
-}
-*/
-
-# ─── NSGs ─────────────────────────────────────────────────────────────────────
+// Network Security Group Central India
 output "nsg_india_id" {
   description = "Resource ID of the Central India NSG"
   value       = azurerm_network_security_group.nsg_india.id
 }
 
-/*
-output "nsg_usa_id" {
-  description = "Resource ID of the West US 2 NSG"
-  value       = azurerm_network_security_group.nsg_usa.id
-}
-*/
-
-# ─── Key Vault ─────────────────────────────────────────────────────────────────
+// Key Vault Central India
 output "key_vault_id" {
   description = "Resource ID of the Key Vault"
   value       = azurerm_key_vault.kv.id
@@ -112,14 +65,14 @@ output "key_vault_uri" {
   value       = azurerm_key_vault.kv.vault_uri
 }
 
-# ─── Generated SSH Key ─────────────────────────────────────────────────────────
+// SSH Key Central India
 output "ssh_public_key_openssh" {
   description = "Generated SSH public key (OpenSSH format)"
   value       = tls_private_key.generated.public_key_openssh
   sensitive   = true
 }
 
-# ─── Key Vault Secret URIs ─────────────────────────────────────────────────────
+// Key Vault Secret Central India
 output "kv_secret_ssh_private_key_id" {
   description = "Key Vault secret resource ID for the SSH private key"
   value       = azurerm_key_vault_secret.ssh_private_key.id
