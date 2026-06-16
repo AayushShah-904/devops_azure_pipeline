@@ -80,6 +80,8 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
       TF_VAR_admin_password: ${{ secrets.TF_VAR_ADMIN_PASSWORD }}
 
     steps:
@@ -105,7 +107,7 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          terraform plan -out=tfplan
+          terraform plan -input=false -out=tfplan
           terraform show -json tfplan > tfplan.json
         working-directory: terraform
 
@@ -116,5 +118,5 @@ jobs:
       - name: Terraform Apply
         if: github.event.inputs.action == 'apply'
         run: |
-          terraform apply -auto-approve tfplan
+          terraform apply -input=false -auto-approve tfplan
         working-directory: terraform

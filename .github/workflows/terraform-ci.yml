@@ -78,6 +78,8 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
       TF_VAR_admin_password: ${{ secrets.TF_VAR_ADMIN_PASSWORD }}
 
     steps:
@@ -105,7 +107,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          terraform plan -no-color -out=tfplan > plan_output.txt
+          terraform plan -input=false -no-color -out=tfplan > plan_output.txt
           # Keep only the important part of the plan (discard init/refresh output)
           # Find where the plan summary starts and capture from there
           cat plan_output.txt | grep -A 500 "Terraform will perform the following actions" > clean_plan.txt || cat plan_output.txt > clean_plan.txt
