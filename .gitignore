@@ -2,9 +2,9 @@
 # Local .terraform directories (provider plugins, modules cache)
 **/.terraform/
 
-# Terraform lock files (keep .terraform.lock.hcl in source control
-# so provider versions are reproducible across machines)
-# .terraform.lock.hcl
+# Terraform lock files inside real modules are committed (terraform/ and bootstrap/).
+# The root-level lock file belongs to the reference main.tf and is excluded.
+.terraform.lock.hcl
 
 # Terraform state files — NEVER commit these; they may contain secrets
 *.tfstate
