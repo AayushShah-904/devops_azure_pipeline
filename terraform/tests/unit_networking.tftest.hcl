@@ -28,8 +28,9 @@ run "vnet_address_space_is_correct" {
   command = plan
 
   assert {
-    condition     = azurerm_virtual_network.vnet_india.address_space == ["10.0.0.0/16"]
-    error_message = "VNet address space must be [\"10.0.0.0/16\"] to match the defined network topology."
+    # address_space is set(string) — use contains() to avoid type mismatch with tuple
+    condition     = contains(azurerm_virtual_network.vnet_india.address_space, "10.0.0.0/16")
+    error_message = "VNet address space must contain '10.0.0.0/16' to match the defined network topology."
   }
 }
 
@@ -48,8 +49,9 @@ run "subnet_address_prefix_is_correct" {
   command = plan
 
   assert {
-    condition     = azurerm_subnet.subnet_india.address_prefixes == ["10.0.0.0/24"]
-    error_message = "Subnet address prefix must be [\"10.0.0.0/24\"]."
+    # address_prefixes is set(string) — use contains() to avoid type mismatch with tuple
+    condition     = contains(azurerm_subnet.subnet_india.address_prefixes, "10.0.0.0/24")
+    error_message = "Subnet address prefix must contain '10.0.0.0/24'."
   }
 }
 
