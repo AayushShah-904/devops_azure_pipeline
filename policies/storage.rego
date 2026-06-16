@@ -1,7 +1,9 @@
 package main
 
+import rego.v1
+
 # Deny if any storage container/bucket access is set to public
-deny[msg] {
+deny contains msg if {
   resource := input.resource_changes[_]
   
   # Check Azure storage container
@@ -10,11 +12,20 @@ deny[msg] {
   msg := sprintf("DENY: Azure storage container '%s' has public access type '%s'. Must be private.", [resource.address, resource.change.after.container_access_type])
 }
 
-deny[msg] {
+deny contains msg if {
   resource := input.resource_changes[_]
   
-  # Check AWS S3 bucket public access block
+  # Check AWS S3 bucket public access block (ACLs check)
   resource.type == "aws_s3_bucket_public_access_block"
-  (resource.change.after.block_public_acls != true) or (resource.change.after.block_public_policy != true)
-  msg := sprintf("DENY: AWS S3 bucket public access block '%s' must block public ACLs and policy.", [resource.address])
+  resource.change.after.block_public_acls != true
+  msg := sprintf("DENY: AWS S3 bucket public access block '%s' must block public ACLs.", [resource.address])
+}
+
+deny contains msg if {
+  resource := input.resource_changes[_]
+  
+  # Check AWS S3 bucket public access block (Policy check)
+  resource.type == "aws_s3_bucket_public_access_block"
+  resource.change.after.block_public_policy != true
+  msg := sprintf("DENY: AWS S3 bucket public access block '%s' must block public policy.", [resource.address])
 }

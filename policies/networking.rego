@@ -1,7 +1,9 @@
 package main
 
+import rego.v1
+
 # Deny if any security/firewall rule allows port 22 (SSH) from all sources (* or 0.0.0.0/0)
-deny[msg] {
+deny contains msg if {
   resource := input.resource_changes[_]
   
   # Check for Azure NSG rules
@@ -11,7 +13,7 @@ deny[msg] {
   msg := sprintf("DENY: Azure NSG rule '%s' allows SSH (port 22) from public source.", [resource.address])
 }
 
-deny[msg] {
+deny contains msg if {
   resource := input.resource_changes[_]
   
   # Check for AWS Security Group rules
@@ -23,16 +25,16 @@ deny[msg] {
   msg := sprintf("DENY: AWS security group rule '%s' allows SSH (port 22) from public CIDR.", [resource.address])
 }
 
-is_public_source(prefix) {
+is_public_source(prefix) if {
   prefix == "*"
 }
-is_public_source(prefix) {
+is_public_source(prefix) if {
   prefix == "0.0.0.0/0"
 }
-is_public_source(prefix) {
+is_public_source(prefix) if {
   prefix == "Internet"
 }
 
-is_public_cidr(cidr) {
+is_public_cidr(cidr) if {
   cidr == "0.0.0.0/0"
 }
