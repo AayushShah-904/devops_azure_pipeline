@@ -1,0 +1,48 @@
+{
+  "subscription_id": "<YOUR_AZURE_SUBSCRIPTION_ID>",
+  "tenant_id": "<YOUR_AZURE_TENANT_ID>",
+
+  "resource_group_name": "bo-sandbox-rg-tf",
+  "location_westus2": "westus2",
+  "location_centralindia": "centralindia",
+
+  "admin_username": "bharatomni",
+  "admin_password": "<STRONG_PASSWORD_HERE>",
+
+  "vm_size": "Standard_B2s",
+  "vm_westus2_name": "bo-sandbox-vm-usa-tf",
+  "vm_india_name": "bo-sandbox-vm-india-tf",
+  "vm_westus2_computer_name": "bosandvmusa",
+  "vm_india_computer_name": "bosandvmindia",
+
+  "os_disk_size_gb": 30,
+  "os_disk_storage_type": "StandardSSD_LRS",
+  "vm_westus2_os_disk_name": "bo-sandbox-vm-usa-disk1-tf",
+  "vm_india_os_disk_name": "bo-sandbox-vm-india-disk1-tf",
+
+  "image_publisher": "canonical",
+  "image_offer": "ubuntu-24_04-lts",
+  "image_sku": "server",
+  "image_version": "latest",
+
+  "key_vault_name": "kv-bo-sandbox-tf",
+  "key_vault_sku": "standard",
+  "key_vault_soft_delete_days": 90,
+
+  "nic_india_name": "bo-sandbox-nic-india-tf",
+  "nic_westus2_name": "bo-sandbox-nic-usa-tf",
+
+  "public_ip_india_name": "bo-sandbox-ip-india-tf",
+  "public_ip_westus2_name": "bo-sandbox-ip-usa-tf",
+
+  "nsg_india_name": "bo-sandbox-nsg-india-tf",
+  "nsg_westus2_name": "bo-sandbox-nsg-usa-tf",
+
+  "vnet_india_name": "bo-sandbox-vnet-india-tf",
+  "vnet_westus2_name": "bo-sandbox-vnet-usa-tf",
+  "vnet_address_space": ["10.0.0.0/16"],
+  "subnet_address_prefixes": ["10.0.0.0/24"],
+
+  "ssh_public_key_resource_name": "bo-sandbox-sshkey-usa-tf",
+  "ssh_public_key_india_resource_name": "bo-sandbox-sshkey-india-tf"
+}

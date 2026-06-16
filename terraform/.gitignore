@@ -1,0 +1,19 @@
+# ─── Terraform state (never commit) ──────────────────────────────────────────
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# ─── Provider plugins / module cache ─────────────────────────────────────────
+.terraform/
+
+# ─── Plan files (may contain secrets) ────────────────────────────────────────
+*.tfplan
+*.tfplan.json
+
+# ─── tfvars with real values (use example files instead) ─────────────────────
+terraform.tfvars
+terraform.tfvars.json
+
+# ─── Crash logs ───────────────────────────────────────────────────────────────
+crash.log
+crash.*.log

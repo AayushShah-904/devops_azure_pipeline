@@ -1,0 +1,70 @@
+# ─── Terraform ────────────────────────────────────────────────────────────────
+# Local .terraform directories (provider plugins, modules cache)
+**/.terraform/
+
+# Terraform lock files (keep .terraform.lock.hcl in source control
+# so provider versions are reproducible across machines)
+# .terraform.lock.hcl
+
+# Terraform state files — NEVER commit these; they may contain secrets
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Terraform plan output files (may contain sensitive values)
+*.tfplan
+*.tfplan.json
+
+# Override files (used for local dev overrides)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI config file
+.terraformrc
+terraform.rc
+
+# ─── Secrets / Credentials ────────────────────────────────────────────────────
+# tfvars files often contain subscription IDs, passwords, secrets.
+# Keep *.tfvars.json in .gitignore and distribute via a secrets manager
+# or environment variables in CI/CD.
+# Comment out the lines below if you intentionally track example tfvars.
+*.tfvars
+*.tfvars.json
+
+# Azure CLI credentials / service-principal JSON exports
+*.azureauth
+azure-credentials.json
+sp-credentials.json
+
+# SSH private keys
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# ─── OS / Editor ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+
+# Vim swap files
+*.swp
+*.swo
+
+# ─── Logs & Temp ──────────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.bak

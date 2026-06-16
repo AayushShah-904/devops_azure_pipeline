@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "extensions_enablevmAccess_username": { "value": "bharatomni" },
+    "extensions_enablevmAccess_password": { "value": "BharatOmni@2026#" },
+    "extensions_enablevmAccess_ssh_key":  { "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGxKAxv965B7N4VY39HqKp71mHPKAsmeN2FLRE2PwKhZ aayushshah904@gmail.com" },
+    "extensions_enablevmAccess_reset_ssh": { "value": "false" },
+    "extensions_enablevmAccess_remove_user": { "value": "" },
+    "extensions_enablevmAccess_expiration": { "value": "" }
+  }
+}
