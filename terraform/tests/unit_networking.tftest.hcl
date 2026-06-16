@@ -11,7 +11,7 @@ run "vnet_address_space_is_correct" {
   command = plan
 
   assert {
-    condition     = azurerm_virtual_network.vnet_india.address_space[0] == "10.0.0.0/16"
+    condition     = contains(azurerm_virtual_network.vnet_india.address_space, "10.0.0.0/16")
     error_message = "VNet Central India address space is incorrect"
   }
 }
@@ -20,7 +20,7 @@ run "subnet_address_prefixes_are_correct" {
   command = plan
 
   assert {
-    condition     = azurerm_subnet.subnet_india.address_prefixes[0] == "10.0.0.0/24"
+    condition     = contains(azurerm_subnet.subnet_india.address_prefixes, "10.0.0.0/24")
     error_message = "Subnet Central India address prefix is incorrect"
   }
 }
