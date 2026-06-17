@@ -46,7 +46,7 @@ variable "admin_password" {
 variable "vm_size" {
   description = "VM SKU size for both Linux VMs. Standard_B2s is used for Azure Student subscriptions. Upgrade to Standard_D2s_v3 or higher on paid subscriptions."
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_B2s "
 }
 
 variable "vm_westus2_name" {
