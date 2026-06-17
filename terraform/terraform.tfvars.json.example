@@ -9,7 +9,7 @@
   "admin_username": "bharatomni",
   "admin_password": "<STRONG_PASSWORD_HERE>",
 
-  "vm_size": "Standard_B2s",
+  "vm_size": "Standard_D2s_v3",
   "vm_westus2_name": "bo-sandbox-vm-usa-tf",
   "vm_india_name": "bo-sandbox-vm-india-tf",
   "vm_westus2_computer_name": "bosandvmusa",
